@@ -121,24 +121,26 @@ function Home() {
   const orderExchange = (retry = false) => {
     // 환전 주문 처리 로직 (생략)
     const token = localStorage.getItem("token");
+    const body = {
+      exchangeRateId:
+        country === "USD"
+          ? exchangeRateUSD.exchangeRateId
+          : exchangeRateJPY.exchangeRateId,
+      fromCurrency: exchangeMode === "BUY" ? "KRW" : country,
+      toCurrency: exchangeMode === "BUY" ? country : "KRW",
+      forexAmount: amountToExchange,
+    };
+
     axios
-      .post(`${base}/orders`, null, {
+      .post(`${base}/orders`, body, {
         headers: { Authorization: `Bearer ${token}` },
-        params: {
-          exchangeRateId:
-            country === "USD"
-              ? exchangeRateUSD.exchangeRateId
-              : exchangeRateJPY.exchangeRateId,
-          fromCurrency: exchangeMode === "BUY" ? "KRW" : country,
-          toCurrency: exchangeMode === "BUY" ? country : "KRW",
-          forexAmount: amountToExchange,
-        },
       })
       .then((response) => {
         console.log("Exchange order placed:", response.data);
         // 새로 주문이 체결되면 지갑 정보를 갱신
         try {
           fetchWallets();
+          fetchExchangeHistory();
         } catch (err) {
           console.error("Failed to refresh wallets after order:", err);
         }
