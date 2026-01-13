@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function LogIn() {
-  const apiUrl = import.meta.env.VITE_API_URL;
-  const base = import.meta.env.DEV ? "/api" : apiUrl;
+  const base = "/api";
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
 
