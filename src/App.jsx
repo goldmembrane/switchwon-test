@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import LogIn from "./Login.jsx";
+import LogIn from "./Login/LogIn.jsx";
 import Home from "./Home.jsx";
 
 function App() {
