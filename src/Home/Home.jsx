@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import "./Home.css";
+
 function Home() {
   const base = "/api";
   const navigate = useNavigate();
@@ -201,61 +203,149 @@ function Home() {
 
   return (
     <>
-      {/* 환율 정보 부분 */}
-      <div>
-        <div>
-          {exchangeRateUSD ? `USD: ${exchangeRateUSD.rate}` : "Loading..."}
-        </div>
-        <div>
-          {exchangeRateUSD
-            ? `${exchangeRateUSD.changePercentage}`
-            : "Loading..."}
-        </div>
-        <div>
-          {exchangeRateJPY ? `JPY: ${exchangeRateJPY.rate}` : "Loading..."}
-        </div>
-        <div>
-          {exchangeRateJPY
-            ? `${exchangeRateJPY.changePercentage}`
-            : "Loading..."}
+      <div className="home-main-container">
+        <nav className="home-navigator">
+          <div className="home-app-title">Exchange app</div>
+
+          <div className="home-navigator-button-container">
+            <button className="home-navigator-button">환전하기</button>
+            <button className="home-navigator-button">환전내역</button>
+            {/* 로그아웃 버튼 */}
+            <button className="logout-button" onClick={handleLogout}>
+              Log out
+            </button>
+          </div>
+        </nav>
+
+        {/* 환율 정보 부분 */}
+        <div className="exchange-container">
+          <h2 className="exchange-title">환율 정보</h2>
+          <div className="exchange-label">
+            실시간 환율을 확인하고 간편하게 환전하세요.
+          </div>
+
+          <div className="exchange-content">
+            <div className="rate-wallet-container">
+              <div className="exchange-info">
+                <div className="exchange-information-container">
+                  <div className="exchange-information">
+                    <label className="exchange-currency">USD</label>
+                    <label className="exchange-currency-korean">
+                      미국 달러
+                    </label>
+                  </div>
+                  <div className="exchange-rate">
+                    {exchangeRateUSD
+                      ? `${exchangeRateUSD.rate}KRW`
+                      : "Loading..."}
+                  </div>
+                  <div
+                    className={`exchange-percentage ${
+                      exchangeRateUSD?.changePercentage &&
+                      exchangeRateUSD.changePercentage > 0
+                        ? "plus"
+                        : "minus"
+                    }`}
+                  >
+                    {exchangeRateUSD
+                      ? `${exchangeRateUSD.changePercentage}%`
+                      : "Loading..."}
+                  </div>
+                </div>
+
+                <div className="exchange-information-container">
+                  <div className="exchange-information">
+                    <label className="exchange-currency">JPY</label>
+                    <label className="exchange-currency-korean">
+                      일본 엔화
+                    </label>
+                  </div>
+                  <div className="exchange-rate">
+                    {exchangeRateJPY
+                      ? `${exchangeRateJPY.rate}KRW`
+                      : "Loading..."}
+                  </div>
+                  <div
+                    className={`exchange-percentage ${
+                      exchangeRateJPY?.changePercentage &&
+                      exchangeRateJPY.changePercentage > 0
+                        ? "plus"
+                        : "minus"
+                    }`}
+                  >
+                    {exchangeRateJPY
+                      ? `${exchangeRateJPY.changePercentage}%`
+                      : "Loading..."}
+                  </div>
+                </div>
+              </div>
+              {/* 사용자 지갑 조회 부분 */}
+              <div className="wallet-container">
+                <label className="wallet-label">내 지갑</label>
+                <div className="wallet-content-container">
+                  <div className="wallet-content">
+                    <label className="wallet-currency">KRW</label>
+                    <div className="wallet-currency-amount">
+                      {KRWWallet ? `KRW: ${KRWWallet.balance}` : "Loading..."}
+                    </div>
+                  </div>
+                  <div className="wallet-content">
+                    <label className="wallet-currency">USD</label>
+                    <div className="wallet-currency-amount">
+                      {USDWallet ? `USD: ${USDWallet.balance}` : "Loading..."}
+                    </div>
+                  </div>
+                  <div className="wallet-content">
+                    <label className="wallet-currency">JPY</label>
+                    <div className="wallet-currency-amount">
+                      {JPYWallet ? `JPY: ${JPYWallet.balance}` : "Loading..."}
+                    </div>
+                  </div>
+                </div>
+                <div className="wallet-total-container">
+                  <label className="wallet-taotal-currency">총 보유 자산</label>
+                  <div className="wallet-total-amount">
+                    {totalBalanceKRW ? `${totalBalanceKRW}` : "Loading..."}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 환전 관련 부분*/}
+            <div>
+              <select value={country} onChange={handleCountryChange}>
+                <option value="USD">USD</option>
+                <option value="JPY">JPY</option>
+              </select>
+              <select
+                value={exchangeMode}
+                onChange={(e) => setExchangeMode(e.target.value)}
+              >
+                <option value="BUY">BUY</option>
+                <option value="SELL">SELL</option>
+              </select>
+              <input
+                type="number"
+                placeholder="환전할 금액"
+                value={amountToExchange}
+                onChange={handleAmountChange}
+              />
+              <div>
+                {amountToExchange && resultEstimate
+                  ? `예상 환전 금액: ${resultEstimate}`
+                  : "예상 환전 금액: 0"}
+              </div>
+              <div>
+                {appliedRate ? `적용된 환율: ${appliedRate}` : "Loading..."}
+              </div>
+              <button onClick={orderExchange}>환전하기</button>
+            </div>
+          </div>
+
+          <div></div>
         </div>
       </div>
-      {/* 사용자 지갑 조회 부분 */}
-      <div>
-        <div>{KRWWallet ? `KRW: ${KRWWallet.balance}` : "Loading..."}</div>
-        <div>{USDWallet ? `USD: ${USDWallet.balance}` : "Loading..."}</div>
-        <div>{JPYWallet ? `JPY: ${JPYWallet.balance}` : "Loading..."}</div>
-        <div>
-          {totalBalanceKRW ? `Total KRW: ${totalBalanceKRW}` : "Loading..."}
-        </div>
-      </div>
-      {/* 환전 관련 부분*/}
-      <div>
-        <select value={country} onChange={handleCountryChange}>
-          <option value="USD">USD</option>
-          <option value="JPY">JPY</option>
-        </select>
-        <select
-          value={exchangeMode}
-          onChange={(e) => setExchangeMode(e.target.value)}
-        >
-          <option value="BUY">BUY</option>
-          <option value="SELL">SELL</option>
-        </select>
-        <input
-          type="number"
-          placeholder="환전할 금액"
-          value={amountToExchange}
-          onChange={handleAmountChange}
-        />
-        <div>
-          {amountToExchange && resultEstimate
-            ? `예상 환전 금액: ${resultEstimate}`
-            : "예상 환전 금액: 0"}
-        </div>
-        <div>{appliedRate ? `적용된 환율: ${appliedRate}` : "Loading..."}</div>
-        <button onClick={orderExchange}>환전하기</button>
-      </div>
+
       {/* 환전 내역 부분 */}
       <div>
         {exchangeHistory.length === 0 ? (
@@ -271,9 +361,6 @@ function Home() {
           </ul>
         )}
       </div>
-
-      {/* 로그아웃 버튼 */}
-      <button onClick={handleLogout}>로그아웃</button>
     </>
   );
 }
