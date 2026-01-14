@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import "./LogIn.css";
+
 function LogIn() {
   const base = "/api";
   const navigate = useNavigate();
@@ -37,16 +39,25 @@ function LogIn() {
   };
 
   return (
-    <div>
-      <h1>LogIn Page</h1>
-      <input
-        type="text"
-        placeholder="Email"
-        onChange={handleEmailChange}
-        value={email}
-      />
+    <div className="login-container">
+      <h1>반갑습니다.</h1>
+      <label className="login-container-label">
+        로그인 정보를 입력해주세요.
+      </label>
+      <div className="login-input-container">
+        <label className="login-input-label">이메일 주소를 입력해주세요.</label>
+        <input
+          type="text"
+          placeholder="Email"
+          onChange={handleEmailChange}
+          className="login-input"
+          value={email}
+        />
 
-      <button onClick={handleSubmit}>LogIn</button>
+        <button onClick={handleSubmit} className="login-button">
+          로그인하기
+        </button>
+      </div>
     </div>
   );
 }
