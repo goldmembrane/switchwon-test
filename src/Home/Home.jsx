@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import { formatCurrency } from "../Util/utils";
 import "./Home.css";
 
 function Home() {
@@ -180,7 +181,6 @@ function Home() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log("Exchange history:", response.data);
         setExchangeHistory(response.data.data);
       })
       .catch((error) => {
@@ -201,6 +201,8 @@ function Home() {
     localStorage.removeItem("token");
     window.location.href = "/";
   };
+
+  console.log(pageMode);
 
   return (
     <>
@@ -305,27 +307,33 @@ function Home() {
                   <div className="wallet-content">
                     <label className="wallet-currency">KRW</label>
                     <div className="wallet-currency-amount">
-                      {KRWWallet ? `\u20A9 ${KRWWallet.balance}` : "Loading..."}
+                      {KRWWallet
+                        ? `\u20A9 ${formatCurrency(KRWWallet.balance)}`
+                        : "Loading..."}
                     </div>
                   </div>
                   <div className="wallet-content">
                     <label className="wallet-currency">USD</label>
                     <div className="wallet-currency-amount">
-                      {USDWallet ? `$ ${USDWallet.balance}` : "Loading..."}
+                      {USDWallet
+                        ? `$ ${formatCurrency(USDWallet.balance)}`
+                        : "Loading..."}
                     </div>
                   </div>
                   <div className="wallet-content">
                     <label className="wallet-currency">JPY</label>
                     <div className="wallet-currency-amount">
-                      {JPYWallet ? `\u00A5 ${JPYWallet.balance}` : "Loading..."}
+                      {JPYWallet
+                        ? `\u00A5 ${formatCurrency(JPYWallet.balance)}`
+                        : "Loading..."}
                     </div>
                   </div>
                 </div>
                 <div className="wallet-total-container">
-                  <label className="wallet-taotal-currency">총 보유 자산</label>
+                  <label className="wallet-total-currency">총 보유 자산</label>
                   <div className="wallet-total-amount">
                     {totalBalanceKRW
-                      ? `\u20A9 ${totalBalanceKRW}`
+                      ? `\u20A9 ${formatCurrency(totalBalanceKRW)}`
                       : "Loading..."}
                   </div>
                 </div>
@@ -455,16 +463,13 @@ function Home() {
                       <td>{h.orderId ?? "-"}</td>
                       <td>{h.orderedAt.replace(/T/, " ")}</td>
                       <td style={{ textAlign: "right" }}>
-                        {h.fromAmount ??
-                          h.forexAmount ??
-                          h.fromCurrencyAmount ??
-                          "-"}
+                        {formatCurrency(h.fromAmount ?? "-")}
                       </td>
                       <td style={{ textAlign: "right" }}>
                         {h.appliedRate ?? h.exchangeRate ?? "-"}
                       </td>
                       <td style={{ textAlign: "right" }}>
-                        {h.toAmount ?? h.receivedAmount ?? "-"}
+                        {formatCurrency(h.toAmount ?? "-")}
                       </td>
                     </tr>
                   ))}

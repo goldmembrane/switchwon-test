@@ -4,10 +4,6 @@
   height: 100vh;
 }
 
-.hidden {
-  display: none;
-}
-
 .home-navigator {
   display: flex;
   justify-content: space-between;
@@ -181,6 +177,18 @@
   padding: 16px 32px;
   border-top: 1px solid #d0d6db;
   background-color: #f7f8f9;
+}
+
+.wallet-total-currency {
+  font-size: 20px;
+  font-weight: 500;
+  color: #646f7c;
+}
+
+.wallet-total-amount {
+  font-size: 20px;
+  font-weight: 700;
+  color: #3479eb;
 }
 
 .exchange-action-container {
@@ -436,4 +444,8 @@ option {
 }
 .history-table tbody tr:hover td {
   background: #fbfdff;
+}
+
+.hidden {
+  display: none;
 }
