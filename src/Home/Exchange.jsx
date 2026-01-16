@@ -5,9 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { formatCurrency } from "../Util/utils";
 import "./Exchange.css";
 
-function Exchange() {
+function Exchange(props) {
   const base = "/api";
   const navigate = useNavigate();
+  const { fetchExchangeHistory } = props;
 
   const [exchangeRateUSD, setExchangeRateUSD] = useState(null);
   const [exchangeRateJPY, setExchangeRateJPY] = useState(null);
@@ -137,7 +138,6 @@ function Exchange() {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((response) => {
-        console.log("Exchange order placed:", response.data);
         // 새로 주문이 체결되면 지갑 정보를 갱신
         try {
           fetchWallets();
@@ -150,7 +150,7 @@ function Exchange() {
         console.error("Failed to place exchange order:", error);
 
         const code = error?.response?.data?.code;
-        if (code === "EXCHANGE_RATE_CURRENCY_MISMATCH" && !retry) {
+        if (code === "EXCHANGE_RATE_CURRENCY_MISMATCH" && retry === false) {
           // refresh rates, then retry once
           fetchExchangeRate()
             .then(() => {
@@ -163,7 +163,9 @@ function Exchange() {
               );
             });
         } else if (code === "WALLET_INSUFFICIENT_BALANCE") {
-          alert("지갑 잔액이 부족합니다.");
+          alert(error.response.data.message);
+        } else if (code === "INVALED_AMOUNT_MIN") {
+          alert(error.response.data.message);
         }
       });
   };

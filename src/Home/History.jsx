@@ -23,25 +23,10 @@ function HistoryRow({ h }) {
   );
 }
 
-function History() {
-  const base = "/api";
+function History(props) {
   const navigate = useNavigate();
 
-  const [exchangeHistory, setExchangeHistory] = useState([]);
-
-  const fetchExchangeHistory = () => {
-    const token = localStorage.getItem("token");
-    axios
-      .get(`${base}/orders`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        setExchangeHistory(response.data.data);
-      })
-      .catch((error) => {
-        console.error("Failed to fetch exchange history:", error);
-      });
-  };
+  const { fetchExchangeHistory, exchangeHistory } = props;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
