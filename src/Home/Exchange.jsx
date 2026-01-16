@@ -149,6 +149,7 @@ function Exchange() {
       })
       .catch((error) => {
         console.error("Failed to place exchange order:", error);
+
         const code = error?.response?.data?.code;
         if (code === "EXCHANGE_RATE_CURRENCY_MISMATCH" && !retry) {
           // refresh rates, then retry once
@@ -162,6 +163,8 @@ function Exchange() {
                 err
               );
             });
+        } else if (code === "WALLET_INSUFFICIENT_BALANCE") {
+          alert("지갑 잔액이 부족합니다.");
         }
       });
   };
@@ -335,7 +338,7 @@ function Exchange() {
             <label className="applied-rate-label">적용 환율</label>
             <div className="applied-rate-content">
               <span className="applied-rate">
-                {country === "USD" ? "1 USD = " : "1 JPY = "}
+                {country === "USD" ? "1 USD = " : "100 JPY = "}
               </span>
               <div className="applied-rate">
                 {appliedRate ? `${appliedRate}원` : "Loading..."}
