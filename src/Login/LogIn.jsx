@@ -21,7 +21,6 @@ function LogIn() {
         params: { email },
       })
       .then((response) => {
-        console.log("Login successful:", response.data);
         localStorage.setItem("token", response.data.data.token);
         navigate("/home");
       })

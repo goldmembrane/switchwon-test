@@ -70,7 +70,6 @@ function Exchange() {
     fetchExchangeRate();
     fetchWallets();
 
-    // Refresh exchange rates every 1 minute
     const intervalId = setInterval(() => {
       fetchExchangeRate();
     }, 60 * 1000);
